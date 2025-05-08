@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
-import { Inter, Roboto_Mono } from "next/font/google";
+import { Poppins, Roboto_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
-const inter = Inter({
+const poppins = Poppins({
   subsets: ["latin"],
-  variable: "--font-inter",
+  weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-poppins",
   display: "swap",
 });
 
@@ -17,9 +18,9 @@ const robotoMono = Roboto_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Riven | Blog & Technology Insights",
+  title: "FutureWiseTech",
   description:
-    "A center for all our resources & insights about technology, design, and business.",
+    "Your hub for AI, Machine Learning, Deep Learning, NLP and Software Engineering insights. Read expert articles on emerging technologies and trends.",
 };
 
 export default function RootLayout({
@@ -28,7 +29,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${robotoMono.variable}`}>
+    <html lang="en" className={`${poppins.variable} ${robotoMono.variable}`}>
       <body>
         <Navbar />
         <main>{children}</main>

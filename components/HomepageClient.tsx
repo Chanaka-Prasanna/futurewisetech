@@ -6,11 +6,9 @@ import Link from "next/link";
 import { useState } from "react";
 
 const CATEGORIES = [
-  { id: "technology", name: "Technology" },
-  { id: "design", name: "Design" },
-  { id: "management", name: "Management" },
-  { id: "resources", name: "Resources" },
-  { id: "customer-success", name: "Customer Success" },
+  { id: "learning", name: "Learning" },
+  { id: "news", name: "News" },
+  { id: "insights", name: "Insights" },
 ];
 
 interface HomepageClientProps {

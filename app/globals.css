@@ -4,7 +4,7 @@
 /* :root defines custom properties available globally */
 :root {
   /* Font setup */
-  --font-primary: "Inter", "system-ui", sans-serif;
+  --font-primary: "Poppins", var(--font-poppins), "system-ui", sans-serif;
   --font-mono: var(--font-geist-mono);
 
   /* Border Radius */
@@ -70,6 +70,38 @@
     var(--accent-foreground-l);
 
   /* Category colors */
+  --ai-h: 220;
+  --ai-s: 80%;
+  --ai-l: 60%;
+  --ai: var(--ai-h) var(--ai-s) var(--ai-l);
+
+  --ml-h: 270;
+  --ml-s: 80%;
+  --ml-l: 60%;
+  --ml: var(--ml-h) var(--ml-s) var(--ml-l);
+
+  --dl-h: 190;
+  --dl-s: 80%;
+  --dl-l: 60%;
+  --dl: var(--dl-h) var(--dl-s) var(--dl-l);
+
+  --nlp-h: 150;
+  --nlp-s: 80%;
+  --nlp-l: 50%;
+  --nlp: var(--nlp-h) var(--nlp-s) var(--nlp-l);
+
+  --software-engineering-h: 30;
+  --software-engineering-s: 80%;
+  --software-engineering-l: 50%;
+  --software-engineering: var(--software-engineering-h)
+    var(--software-engineering-s) var(--software-engineering-l);
+
+  --data-science-h: 300;
+  --data-science-s: 80%;
+  --data-science-l: 45%;
+  --data-science: var(--data-science-h) var(--data-science-s)
+    var(--data-science-l);
+
   --technology-h: 220;
   --technology-s: 80%;
   --technology-l: 60%;
@@ -103,6 +135,22 @@
   --destructive: var(--destructive-h) var(--destructive-s) var(--destructive-l);
   --destructive-foreground: var(--primary-foreground-h)
     var(--primary-foreground-s) var(--primary-foreground-l);
+
+  /* New categories */
+  --learning-h: 220;
+  --learning-s: 80%;
+  --learning-l: 60%;
+  --learning: var(--learning-h) var(--learning-s) var(--learning-l);
+
+  --news-h: 270;
+  --news-s: 80%;
+  --news-l: 60%;
+  --news: var(--news-h) var(--news-s) var(--news-l);
+
+  --insights-h: 190;
+  --insights-s: 80%;
+  --insights-l: 60%;
+  --insights: var(--insights-h) var(--insights-s) var(--insights-l);
 }
 
 /* Base body styles */
@@ -112,6 +160,52 @@ body {
   color: hsl(var(--foreground));
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  letter-spacing: -0.01em;
+  line-height: 1.6;
+}
+
+/* Typography adjustments for Poppins */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-primary);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.3;
+}
+
+h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+}
+
+h2 {
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+h3 {
+  font-size: 1.75rem;
+}
+
+h4 {
+  font-size: 1.5rem;
+}
+
+h5 {
+  font-size: 1.25rem;
+}
+
+h6 {
+  font-size: 1rem;
+}
+
+p {
+  margin-bottom: 1.5rem;
+  line-height: 1.7;
 }
 
 .container {
@@ -129,6 +223,7 @@ body {
   color: hsl(var(--foreground));
   line-height: 1.75;
   font-family: var(--font-primary);
+  font-weight: 400;
 }
 
 /* Headings */
@@ -140,14 +235,16 @@ body {
 .markdown-content h6 {
   font-family: var(--font-primary);
   color: hsl(var(--foreground));
-  font-weight: 700;
+  font-weight: 600;
   margin-top: 2rem;
   margin-bottom: 1rem;
   line-height: 1.3;
+  letter-spacing: -0.02em;
 }
 
 .markdown-content h1 {
   font-size: 2.25rem;
+  font-weight: 700;
   border-bottom: 1px solid hsl(var(--border));
   padding-bottom: 0.5rem;
 }
@@ -243,13 +340,23 @@ body {
 .markdown-content pre {
   background: hsl(215, 14%, 15%);
   color: #f8f8f2;
-  padding: 1rem;
+  padding: 1.5rem;
   border-radius: var(--radius-md);
   overflow-x: auto;
   font-family: var(--font-mono);
   margin: 1.5rem 0;
   font-size: 0.9rem;
   line-height: 1.6;
+  position: relative;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+}
+
+.markdown-content pre code {
+  background: transparent;
+  padding: 0;
+  font-size: inherit;
+  border-radius: 0;
+  white-space: pre;
 }
 
 .markdown-content code {
@@ -260,10 +367,66 @@ body {
   font-size: 0.9em;
 }
 
-.markdown-content pre code {
-  background: transparent;
-  padding: 0;
-  font-size: inherit;
+/* Enhanced code styling for Prism */
+.markdown-content pre[class*="language-"] {
+  background: #2d2d2d;
+  color: #ccc;
+  margin: 1.5rem 0;
+  padding: 1.5rem;
+  border-radius: var(--radius-md);
+  overflow: auto;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  font-family: var(--font-mono);
+  position: relative;
+}
+
+.markdown-content pre[class*="language-"]::before {
+  content: attr(class);
+  position: absolute;
+  top: 0;
+  right: 0;
+  color: #fff;
+  text-align: right;
+  font-size: 0.75rem;
+  padding: 5px 10px;
+  border-bottom-left-radius: var(--radius-sm);
+  border-top-right-radius: var(--radius-md);
+  border: 0;
+  background: #37474f;
+  text-transform: uppercase;
+  pointer-events: none;
+}
+
+/* Line numbers styling */
+.markdown-content pre.line-numbers {
+  padding-left: 3.8rem;
+  counter-reset: line;
+}
+
+.markdown-content .line-numbers .line-numbers-rows {
+  position: absolute;
+  pointer-events: none;
+  top: 1.5rem;
+  font-size: 100%;
+  left: 0;
+  width: 3rem;
+  border-right: 1px solid rgba(255, 255, 255, 0.2);
+  user-select: none;
+}
+
+.markdown-content .line-numbers-rows > span {
+  display: block;
+  counter-increment: line;
+  pointer-events: none;
+}
+
+.markdown-content .line-numbers-rows > span:before {
+  content: counter(line);
+  color: rgba(255, 255, 255, 0.4);
+  display: block;
+  padding-right: 0.8rem;
+  text-align: right;
 }
 
 /* Images */
@@ -358,6 +521,24 @@ body {
   .bg-accent-foreground {
     background-color: hsl(var(--accent-foreground));
   }
+  .bg-ai {
+    background-color: hsl(var(--ai));
+  }
+  .bg-ml {
+    background-color: hsl(var(--ml));
+  }
+  .bg-dl {
+    background-color: hsl(var(--dl));
+  }
+  .bg-nlp {
+    background-color: hsl(var(--nlp));
+  }
+  .bg-software-engineering {
+    background-color: hsl(var(--software-engineering));
+  }
+  .bg-data-science {
+    background-color: hsl(var(--data-science));
+  }
   .bg-technology {
     background-color: hsl(var(--technology));
   }
@@ -372,6 +553,15 @@ body {
   }
   .bg-customer-success {
     background-color: hsl(var(--customer-success));
+  }
+  .bg-learning {
+    background-color: hsl(var(--learning));
+  }
+  .bg-news {
+    background-color: hsl(var(--news));
+  }
+  .bg-insights {
+    background-color: hsl(var(--insights));
   }
 
   /* Text Colors */
@@ -399,6 +589,24 @@ body {
   .text-accent-foreground {
     color: hsl(var(--accent-foreground));
   }
+  .text-ai {
+    color: hsl(var(--ai));
+  }
+  .text-ml {
+    color: hsl(var(--ml));
+  }
+  .text-dl {
+    color: hsl(var(--dl));
+  }
+  .text-nlp {
+    color: hsl(var(--nlp));
+  }
+  .text-software-engineering {
+    color: hsl(var(--software-engineering));
+  }
+  .text-data-science {
+    color: hsl(var(--data-science));
+  }
   .text-technology {
     color: hsl(var(--technology));
   }
@@ -413,6 +621,15 @@ body {
   }
   .text-customer-success {
     color: hsl(var(--customer-success));
+  }
+  .text-learning {
+    color: hsl(var(--learning));
+  }
+  .text-news {
+    color: hsl(var(--news));
+  }
+  .text-insights {
+    color: hsl(var(--insights));
   }
   .text-muted {
     color: hsl(var(--foreground) / 0.6);
@@ -459,10 +676,12 @@ body {
     color: hsl(var(--foreground));
     transition: color 0.2s;
     position: relative;
+    letter-spacing: -0.01em;
   }
 
   .nav-links a.active {
     color: hsl(var(--primary));
+    font-weight: 600;
   }
 
   .nav-links a.active::after {
@@ -577,6 +796,36 @@ body {
     letter-spacing: 0.05em;
   }
 
+  .blog-card-tag.ai {
+    color: hsl(var(--primary-foreground));
+    background-color: hsl(var(--ai));
+  }
+
+  .blog-card-tag.ml {
+    color: hsl(var(--primary-foreground));
+    background-color: hsl(var(--ml));
+  }
+
+  .blog-card-tag.dl {
+    color: hsl(var(--primary-foreground));
+    background-color: hsl(var(--dl));
+  }
+
+  .blog-card-tag.nlp {
+    color: hsl(var(--primary-foreground));
+    background-color: hsl(var(--nlp));
+  }
+
+  .blog-card-tag.software-engineering {
+    color: hsl(var(--primary-foreground));
+    background-color: hsl(var(--software-engineering));
+  }
+
+  .blog-card-tag.data-science {
+    color: hsl(var(--primary-foreground));
+    background-color: hsl(var(--data-science));
+  }
+
   .blog-card-tag.technology {
     color: hsl(var(--primary-foreground));
     background-color: hsl(var(--technology));
@@ -602,8 +851,22 @@ body {
     background-color: hsl(var(--customer-success));
   }
 
+  .blog-card-tag.learning {
+    color: hsl(var(--primary-foreground));
+    background-color: hsl(var(--learning));
+  }
+
+  .blog-card-tag.news {
+    color: hsl(var(--primary-foreground));
+    background-color: hsl(var(--news));
+  }
+
+  .blog-card-tag.insights {
+    color: hsl(var(--primary-foreground));
+    background-color: hsl(var(--insights));
+  }
+
   .blog-card-title {
-    font-size: 1.25rem;
     font-weight: 600;
     line-height: 1.4;
     margin-bottom: 0.75rem;
@@ -659,9 +922,11 @@ body {
     justify-content: center;
     padding: 0.5rem 1.25rem;
     font-weight: 500;
+    font-family: var(--font-primary);
     border-radius: var(--radius-md);
     transition: background-color 0.2s, transform 0.1s;
     cursor: pointer;
+    letter-spacing: 0;
   }
 
   .btn-primary {

@@ -237,11 +237,9 @@ export default function CreateBlogPage() {
               onChange={handleInputChange}
               required
             >
-              <option value="Technology">Technology</option>
-              <option value="Design">Design</option>
-              <option value="Management">Management</option>
-              <option value="Resources">Resources</option>
-              <option value="Customer Success">Customer Success</option>
+              <option value="Learning">Learning</option>
+              <option value="News">News</option>
+              <option value="Insights">Insights</option>
             </select>
           </div>
 

@@ -6,10 +6,10 @@ export default function Footer() {
       <div className="container">
         <div className="footer-content">
           <div className="footer-column">
-            <h3 className="footer-title">Riven</h3>
+            <h3 className="footer-title">FutureWiseTech</h3>
             <p className="text-muted mb-4">
-              A center for all our resources & insights about technology,
-              design, and business.
+              A center for all our resources & insights about AI, ML, NLP, Data
+              Science and Software Engineering.
             </p>
           </div>
 
@@ -26,10 +26,9 @@ export default function Footer() {
           <div className="footer-column">
             <h3 className="footer-title">Categories</h3>
             <div className="footer-links">
-              <Link href="/blogs?category=technology">Technology</Link>
-              <Link href="/blogs?category=design">Design</Link>
-              <Link href="/blogs?category=management">Management</Link>
-              <Link href="/blogs?category=resources">Resources</Link>
+              <Link href="/blogs?category=learning">Learning</Link>
+              <Link href="/blogs?category=news">News</Link>
+              <Link href="/blogs?category=insights">Insights</Link>
             </div>
           </div>
 

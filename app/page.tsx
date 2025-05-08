@@ -7,11 +7,9 @@ import { deleteAllBlogPosts } from "@/utils/delete-blog-posts";
 import { seedFirestore } from "@/utils/seed-firestore";
 // Categories for filtering
 const CATEGORIES = [
-  { id: "technology", name: "Technology" },
-  { id: "design", name: "Design" },
-  { id: "management", name: "Management" },
-  { id: "resources", name: "Resources" },
-  { id: "customer-success", name: "Customer Success" },
+  { id: "learning", name: "Learning" },
+  { id: "news", name: "News" },
+  { id: "insights", name: "Insights" },
 ];
 
 export default function HomePage() {

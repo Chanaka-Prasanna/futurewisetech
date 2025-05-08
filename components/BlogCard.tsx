@@ -56,9 +56,11 @@ export default function BlogCard({ post }: BlogCardProps) {
             {post.category}
           </span>
         )}
-        <h2 className="blog-card-title">{post.title}</h2>
+        <p className="blog-card-title text-md line-clamp-2">{post.title}</p>
         {post.description && (
-          <p className="blog-card-description">{post.description}</p>
+          <p className="blog-card-description line-clamp-2">
+            {post.description}
+          </p>
         )}
         <div className="blog-card-meta">
           {post.author && (

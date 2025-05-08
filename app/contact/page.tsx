@@ -5,7 +5,6 @@ export default function ContactPage() {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
-    subject: "",
     message: "",
   });
 
@@ -27,27 +26,38 @@ export default function ContactPage() {
     setIsSubmitting(true);
 
     try {
-      // In a real application, you would send the form data to your backend
-      // For now, just simulate a success response after a delay
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-
-      setSubmitStatus({
-        success: true,
-        message: "Your message has been sent! We'll get back to you soon.",
+      // Call our API endpoint to send the email
+      const response = await fetch("/contact/api", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
       });
 
-      // Reset form
-      setFormData({
-        name: "",
-        email: "",
-        subject: "",
-        message: "",
-      });
+      const data = await response.json();
+
+      if (data.success) {
+        setSubmitStatus({
+          success: true,
+          message: "Your message has been sent! We'll get back to you soon.",
+        });
+
+        // Reset form
+        setFormData({
+          name: "",
+          email: "",
+          message: "",
+        });
+      } else {
+        throw new Error("Failed to send message");
+      }
     } catch (error) {
       setSubmitStatus({
         success: false,
         message: "There was an error sending your message. Please try again.",
       });
+      console.error("Error sending message:", error);
     } finally {
       setIsSubmitting(false);
     }
@@ -101,21 +111,6 @@ export default function ContactPage() {
               name="email"
               className="form-input"
               value={formData.email}
-              onChange={handleChange}
-              required
-            />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="subject" className="form-label">
-              Subject
-            </label>
-            <input
-              type="text"
-              id="subject"
-              name="subject"
-              className="form-input"
-              value={formData.subject}
               onChange={handleChange}
               required
             />
