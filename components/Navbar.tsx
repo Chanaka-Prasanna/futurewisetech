@@ -12,7 +12,7 @@ export default function Navbar() {
       <div className="container">
         <div className="flex items-center justify-between w-full">
           <Link href="/" className="text-2xl font-bold">
-            Riven
+            FutureWiseTech
           </Link>
 
           <button
@@ -70,7 +70,7 @@ export default function Navbar() {
             <Link href="/create-blog" className="btn btn-primary">
               Create Blog
             </Link>
-            <Link href="#" className="download-btn">
+            {/* <Link href="#" className="download-btn">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="16"
@@ -87,7 +87,7 @@ export default function Navbar() {
                 <line x1="12" y1="15" x2="12" y2="3"></line>
               </svg>
               Download Our App
-            </Link>
+            </Link> */}
           </div>
         </div>
       </div>

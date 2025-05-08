@@ -1,11 +1,19 @@
 "use client";
-import { useState, FormEvent, ChangeEvent } from "react";
+import { useState, FormEvent, ChangeEvent, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { db } from "@/lib/firebase";
 
 export default function CreateBlogPage() {
+  useEffect(() => {
+    console.log("Component mounted");
+  }, []);
+
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [preview, setPreview] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -28,11 +36,12 @@ export default function CreateBlogPage() {
       const reader = new FileReader();
 
       reader.onload = (event) => {
-        if (event.target && event.target.result) {
+        const target = event.target;
+        if (target && target.result) {
           setFormData((prev) => ({
             ...prev,
             coverImage: file,
-            coverImagePreview: event.target.result as string,
+            coverImagePreview: target.result as string,
           }));
         }
       };
@@ -41,38 +50,101 @@ export default function CreateBlogPage() {
     }
   };
 
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
+  const uploadImageToCloudinary = async (file: File) => {
+    const formData = new FormData();
+    formData.append("file", file);
 
     try {
-      // In a real application, you would:
-      // 1. Upload the cover image to Cloudinary
-      // 2. Save the blog post data to Firebase
+      // Use our API route instead of direct Cloudinary access
+      console.log("Sending file to API route:", file.name);
+      const response = await fetch("/api/upload-image", {
+        method: "POST",
+        body: formData,
+      });
 
-      // Example code (commented out for now):
-      // const coverImageUrl = await uploadToCloudinary(formData.coverImage);
-      //
-      // const docRef = await addDoc(collection(db, "posts"), {
-      //   title: formData.title,
-      //   description: formData.description,
-      //   content: formData.content,
-      //   category: formData.category,
-      //   coverImage: coverImageUrl,
-      //   date: Date.now(),
-      //   author: {
-      //     name: "Your Name", // This would come from authentication
-      //     avatar: "/your-avatar.jpg"
-      //   },
-      //   readTime: calculateReadTime(formData.content) + " min read"
-      // });
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("Cloudinary error details:", errorData);
+        throw new Error(
+          `Image upload failed: ${errorData.error || "Unknown error"}`
+        );
+      }
 
-      // For demonstration purposes, just delay and redirect
+      const data = await response.json();
+      console.log("Full Cloudinary response:", data);
+
+      // Make sure we have a secure_url in the response
+      if (!data.secure_url) {
+        console.error("Missing secure_url in Cloudinary response:", data);
+        throw new Error("Invalid response from image upload");
+      }
+
+      return data.secure_url;
+    } catch (error) {
+      console.error("Cloudinary upload error:", error);
+      throw error;
+    }
+  };
+
+  const handleSubmit = async (e: FormEvent) => {
+    console.log("Form submit function called");
+    e.preventDefault();
+    setIsSubmitting(true);
+    setError(null);
+    setSuccess(null);
+
+    console.log("Starting blog post creation process...");
+
+    try {
+      let coverImageUrl = "";
+
+      // Upload the cover image to Cloudinary if available
+      if (formData.coverImage) {
+        console.log("Uploading cover image to Cloudinary...");
+        try {
+          coverImageUrl = await uploadImageToCloudinary(formData.coverImage);
+          console.log("Image uploaded successfully:", coverImageUrl);
+        } catch (imageError) {
+          console.error("Error uploading image:", imageError);
+          setError("Failed to upload image. Please try again.");
+          setIsSubmitting(false);
+          return;
+        }
+      }
+
+      // Create the blog post data
+      console.log("Preparing blog post data...");
+      const blogPostData = {
+        title: formData.title,
+        description: formData.description,
+        content: formData.content,
+        category: formData.category,
+        coverImage: coverImageUrl,
+        date: new Date().toISOString(),
+        author: {
+          name: "Chanaka Prasanna", // In a real app, this would come from auth
+          avatar: "https://placehold.co/100x100/gray/white?text=CP", // Default avatar
+        },
+        readTime: `${calculateReadTime(formData.content)} min read`,
+      };
+
+      console.log("Blog post data:", blogPostData);
+
+      // Add the blog post to Firestore
+      console.log("Saving to Firestore...");
+      const docRef = await addDoc(collection(db, "blog-posts"), blogPostData);
+
+      console.log("Blog post created with ID:", docRef.id);
+      setSuccess(`Blog post created successfully! ID: ${docRef.id}`);
+
+      // Wait a moment to show the success message
       setTimeout(() => {
+        // Redirect to blogs page
         router.push("/blogs");
-      }, 1500);
+      }, 2000);
     } catch (error) {
       console.error("Error creating blog post:", error);
+      setError("Failed to create blog post. Please check console for details.");
     } finally {
       setIsSubmitting(false);
     }
@@ -108,6 +180,18 @@ export default function CreateBlogPage() {
           Preview
         </button>
       </div>
+
+      {error && (
+        <div className="alert alert-error mb-6">
+          <p>{error}</p>
+        </div>
+      )}
+
+      {success && (
+        <div className="alert alert-success mb-6">
+          <p>{success}</p>
+        </div>
+      )}
 
       {!preview ? (
         <form onSubmit={handleSubmit} className="create-blog-form">

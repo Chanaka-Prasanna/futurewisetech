@@ -3,123 +3,7 @@ import { useState, useEffect } from "react";
 import BlogCard from "@/components/BlogCard";
 import SearchBar from "@/components/SearchBar";
 import BlogCategories from "@/components/BlogCategories";
-
-// Static data for initial rendering
-const STATIC_POSTS = [
-  {
-    id: "impact-of-technology",
-    title:
-      "The Impact of Technology on the Workplace: How Technology is Changing",
-    description:
-      "Explore how modern technology is transforming work environments and business processes.",
-    coverImage: "/images/tech-workplace.jpg",
-    date: "2023-06-20",
-    category: "Technology",
-    author: {
-      name: "Tracey Wilson",
-      avatar: "/images/avatars/tracey.jpg",
-    },
-    readTime: "13 min read",
-  },
-  {
-    id: "leadership-lessons",
-    title: "Bill Walsh leadership lessons",
-    description:
-      "Learn the secrets of transforming a 2-14 team into a 3x Super Bowl winning Dynasty!",
-    coverImage: "/images/leadership.jpg",
-    date: "2023-06-19",
-    category: "Management",
-    author: {
-      name: "Deanna Geidt",
-      avatar: "/images/avatars/deanna.jpg",
-    },
-    readTime: "10 min read",
-  },
-  {
-    id: "grid-system-design",
-    title: "Grid system for better Design User Interface",
-    description:
-      "A grid system to help designers layout and arrange content on a website.",
-    coverImage: "/images/grid-design.jpg",
-    date: "2023-06-18",
-    category: "Design",
-    author: {
-      name: "Erik Selle",
-      avatar: "/images/avatars/erik.jpg",
-    },
-    readTime: "5 min read",
-  },
-  {
-    id: "business-tools",
-    title: "7 critical business tools every designer needs!",
-    description:
-      "Discover a list of the most important business tools for designers to scale their brands to 6 figures and beyond.",
-    coverImage: "/images/designer-tools.jpg",
-    date: "2023-06-18",
-    category: "Resources",
-    author: {
-      name: "Carter Bentley",
-      avatar: "/images/avatars/carter.jpg",
-    },
-    readTime: "8 min read",
-  },
-  {
-    id: "web-designers-proxy",
-    title: "5 reasons why web designers should use proxy",
-    description:
-      "What are proxy servers and why are web designers using them to improve your web design process?",
-    coverImage: "/images/web-proxy.jpg",
-    date: "2023-05-16",
-    category: "Technology",
-    author: {
-      name: "Emmy Toft",
-      avatar: "/images/avatars/emmy.jpg",
-    },
-    readTime: "5 min read",
-  },
-  {
-    id: "creative-computing",
-    title: "Designers explore the creative possibilities of spatial computing",
-    description:
-      "Apple's Vision Pro and Meta's Quest are opening the way we interact with technology in space.",
-    coverImage: "/images/spatial-computing.jpg",
-    date: "2023-05-11",
-    category: "Design",
-    author: {
-      name: "Cooper Carlson",
-      avatar: "/images/avatars/cooper.jpg",
-    },
-    readTime: "20 min read",
-  },
-  {
-    id: "landing-page-mistakes",
-    title: "Avoid these 7 mistakes when designing a landing page",
-    description:
-      "Designing an effective landing page that converts is not easy. In this post, we'll highlight the mistakes you should avoid.",
-    coverImage: "/images/landing-page.jpg",
-    date: "2023-05-03",
-    category: "Resources",
-    author: {
-      name: "Jessie Mortensen",
-      avatar: "/images/avatars/jessie.jpg",
-    },
-    readTime: "8 min read",
-  },
-  {
-    id: "api-stack",
-    title: "Building your API Stack",
-    description:
-      "Make use of RESTful APIs that team has built for creating, testing, and deploying applications.",
-    coverImage: "/images/api-stack.jpg",
-    date: "2023-04-22",
-    category: "Technology",
-    author: {
-      name: "Jordan Soltman",
-      avatar: "/images/avatars/jordan.jpg",
-    },
-    readTime: "5 min read",
-  },
-];
+import { getPaginatedBlogPosts, BlogPost } from "@/lib/blog-utils";
 
 const CATEGORIES = [
   { id: "technology", name: "Technology" },
@@ -129,17 +13,52 @@ const CATEGORIES = [
   { id: "customer-success", name: "Customer Success" },
 ];
 
+const POSTS_PER_PAGE = 20;
+
 export default function AllBlogsPage() {
-  const [posts, setPosts] = useState(STATIC_POSTS);
+  const [posts, setPosts] = useState<BlogPost[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [lastVisible, setLastVisible] = useState<any>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
 
-  // In a real app, this would fetch from Firebase
-  // useEffect(() => {
-  //   getDocs(collection(db, "posts")).then((snap) => {
-  //     setPosts(snap.docs.map((d) => ({ id: d.id, ...(d.data() as any) })));
-  //   });
-  // }, []);
+  useEffect(() => {
+    fetchPosts();
+  }, []);
+
+  const fetchPosts = async (loadMore = false) => {
+    try {
+      setLoading(true);
+
+      const result = await getPaginatedBlogPosts(
+        POSTS_PER_PAGE,
+        loadMore ? lastVisible : null
+      );
+
+      setHasMore(result.hasMore);
+      setLastVisible(result.lastVisible);
+
+      if (loadMore) {
+        setPosts((prevPosts) => [...prevPosts, ...result.posts]);
+        setCurrentPage((prevPage) => prevPage + 1);
+      } else {
+        setPosts(result.posts);
+        setCurrentPage(1);
+      }
+    } catch (error) {
+      console.error("Error loading blog posts:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const loadMore = () => {
+    if (hasMore && !loading) {
+      fetchPosts(true);
+    }
+  };
 
   // Filter posts based on search query and category
   const filteredPosts = posts.filter((post) => {
@@ -176,19 +95,44 @@ export default function AllBlogsPage() {
         selectedCategory={selectedCategory}
       />
 
-      <div className="blog-grid">
-        {filteredPosts.map((post) => (
-          <BlogCard key={post.id} post={post} />
-        ))}
-      </div>
-
-      {filteredPosts.length === 0 && (
+      {loading && posts.length === 0 ? (
         <div className="text-center py-12">
-          <h3 className="text-xl font-semibold mb-2">No posts found</h3>
-          <p className="text-muted">
-            Try adjusting your search or filter to find what you're looking for
-          </p>
+          <p>Loading blog posts...</p>
         </div>
+      ) : (
+        <>
+          <div className="blog-grid">
+            {filteredPosts.map((post) => (
+              <BlogCard key={post.id} post={post} />
+            ))}
+          </div>
+
+          {filteredPosts.length === 0 && (
+            <div className="text-center py-12">
+              <h3 className="text-xl font-semibold mb-2">No posts found</h3>
+              <p className="text-muted">
+                Try adjusting your search or filter to find what you're looking
+                for
+              </p>
+            </div>
+          )}
+
+          {!loading &&
+            hasMore &&
+            filteredPosts.length > 0 &&
+            !searchQuery &&
+            !selectedCategory && (
+              <div className="text-center py-8">
+                <button
+                  onClick={loadMore}
+                  className="btn btn-primary"
+                  disabled={loading}
+                >
+                  {loading ? "Loading..." : "Load More Posts"}
+                </button>
+              </div>
+            )}
+        </>
       )}
     </div>
   );

@@ -121,6 +121,216 @@ body {
   padding: 0 1rem;
 }
 
+/* Markdown Content Styling */
+.markdown-content {
+  /* max-width: 850px; */
+  margin: 2rem 0;
+  padding: 0;
+  color: hsl(var(--foreground));
+  line-height: 1.75;
+  font-family: var(--font-primary);
+}
+
+/* Headings */
+.markdown-content h1,
+.markdown-content h2,
+.markdown-content h3,
+.markdown-content h4,
+.markdown-content h5,
+.markdown-content h6 {
+  font-family: var(--font-primary);
+  color: hsl(var(--foreground));
+  font-weight: 700;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  line-height: 1.3;
+}
+
+.markdown-content h1 {
+  font-size: 2.25rem;
+  border-bottom: 1px solid hsl(var(--border));
+  padding-bottom: 0.5rem;
+}
+
+.markdown-content h2 {
+  font-size: 1.75rem;
+  border-bottom: 1px solid hsl(var(--border));
+  padding-bottom: 0.3rem;
+}
+
+.markdown-content h3 {
+  font-size: 1.5rem;
+}
+
+.markdown-content h4 {
+  font-size: 1.25rem;
+}
+
+.markdown-content h5 {
+  font-size: 1.1rem;
+}
+
+.markdown-content h6 {
+  font-size: 1rem;
+}
+
+/* Paragraphs, lists */
+.markdown-content p,
+.markdown-content ul,
+.markdown-content ol {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.markdown-content li {
+  margin-bottom: 0.5rem;
+}
+
+.markdown-content ul {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+}
+
+.markdown-content ol {
+  list-style-type: decimal;
+  padding-left: 1.5rem;
+}
+
+/* Links */
+.markdown-content a {
+  color: hsl(var(--primary));
+  text-decoration: none;
+  border-bottom: 1px solid hsla(var(--primary), 0.3);
+  transition: border-bottom-color 0.2s;
+}
+
+.markdown-content a:hover {
+  border-bottom-color: hsl(var(--primary));
+}
+
+/* Text styling */
+.markdown-content strong,
+.markdown-content b {
+  font-weight: 700;
+}
+
+.markdown-content em,
+.markdown-content i {
+  font-style: italic;
+}
+
+.markdown-content del,
+.markdown-content s {
+  text-decoration: line-through;
+}
+
+/* Blockquotes */
+.markdown-content blockquote {
+  margin: 1.5rem 0;
+  padding: 1rem 1.5rem;
+  background: hsl(var(--accent));
+  border-left: 4px solid hsl(var(--primary));
+  color: hsl(var(--foreground));
+  font-style: italic;
+  border-radius: var(--radius-sm);
+}
+
+.markdown-content blockquote p {
+  margin: 0;
+}
+
+/* Code */
+.markdown-content pre {
+  background: hsl(215, 14%, 15%);
+  color: #f8f8f2;
+  padding: 1rem;
+  border-radius: var(--radius-md);
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  margin: 1.5rem 0;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.markdown-content code {
+  background: hsl(var(--accent));
+  padding: 0.2rem 0.4rem;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+}
+
+.markdown-content pre code {
+  background: transparent;
+  padding: 0;
+  font-size: inherit;
+}
+
+/* Images */
+.markdown-content img {
+  display: block;
+  max-width: 100%;
+  margin: 2rem auto;
+  border-radius: var(--radius-md);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+/* Tables */
+.markdown-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.markdown-content th,
+.markdown-content td {
+  border: 1px solid hsl(var(--border));
+  padding: 0.75rem 1rem;
+}
+
+.markdown-content th {
+  background: hsl(var(--accent));
+  font-weight: 600;
+  text-align: left;
+}
+
+.markdown-content tr:nth-child(even) {
+  background: hsl(var(--accent) / 0.5);
+}
+
+/* Horizontal rule */
+.markdown-content hr {
+  border: 0;
+  border-top: 1px solid hsl(var(--border));
+  margin: 2rem 0;
+}
+
+/* Definition lists */
+.markdown-content dl {
+  margin: 1.5rem 0;
+}
+
+.markdown-content dt {
+  font-weight: 700;
+  margin-top: 1rem;
+}
+
+.markdown-content dd {
+  margin-left: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+/* Footnotes */
+.markdown-content .footnotes {
+  margin-top: 3rem;
+  font-size: 0.9rem;
+  color: hsl(var(--foreground) / 0.8);
+  border-top: 1px solid hsl(var(--border));
+  padding-top: 1rem;
+}
+
 /* Custom utility classes */
 @layer utilities {
   /* Background Colors */
@@ -696,12 +906,23 @@ body {
   }
 
   /* KaTeX Math Styling */
-  .math-display {
+  .markdown-content .math-display {
     overflow-x: auto;
-    margin: 1rem 0;
-    padding: 1rem;
-    background-color: hsl(var(--accent));
+    margin: 1.5rem 0;
+    padding: 1.5rem;
+
+    border: 1px solid hsl(var(--border));
     border-radius: var(--radius-md);
+    display: flex;
+    justify-content: center;
+  }
+
+  .markdown-content .math-error {
+    color: hsl(var(--destructive));
+    background-color: hsl(var(--destructive) / 0.1);
+    padding: 0.5rem;
+    border-radius: var(--radius-sm);
+    margin: 1rem 0;
   }
 
   /* Footer */
